@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['18.18.0']
+        node-version: ["18.18.0"]
 
     steps:
       # Checkout code
@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: "npm"
 
       # Install dependencies (uses npm workspaces)
       - name: Install dependencies
@@ -66,5 +66,5 @@ jobs:
       # Optional: Build and test Docker images (if Docker is available)
       - name: Build Docker images
         run: |
-          docker build -f apps/web/Dockerfile -t trial-booking-web:latest .
-          docker build -f apps/admin/Dockerfile -t trial-booking-admin:latest .
+          docker build -f docker/Dockerfile --build-arg APP=web -t trial-booking-web:latest .
+          docker build -f docker/Dockerfile --build-arg APP=admin -t trial-booking-admin:latest .
