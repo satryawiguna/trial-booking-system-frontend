@@ -1,0 +1,42 @@
+# Build artifacts and node_modules
+node_modules/
+.next/
+dist/
+build/
+coverage/
+
+# Git
+.git/
+.gitignore
+
+# Dependencies (we'll install fresh in Docker)
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (use explicit .env in docker-compose instead)
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation and config (not needed in runtime image)
+*.md
+.prettierrc
+.prettierignore
+.eslintrc.json
+
+# Test files and coverage
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+jest.config.js

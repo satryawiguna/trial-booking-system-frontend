@@ -1,0 +1,77 @@
+version: "3.8"
+
+# =============================================================================
+# Trial Booking System — Frontend — Local Development
+# =============================================================================
+# Profile: Local
+# Hot Reload: Enabled (npm run dev via volume mounts)
+# Purpose:   Local development on a developer machine
+#
+# Usage:
+#   docker compose -f docker/docker-compose.local.yml up
+#
+# Access:
+#   Parent View : http://localhost:3002
+#   Admin View  : http://localhost:3001
+#
+# Prerequisites:
+#   - Backend API running (e.g., via trial-booking-system-backend docker compose)
+#   - Or point NEXT_PUBLIC_API_URL to any running backend instance
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Trial Booking System — Parent View (apps/web)
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: deps
+      args:
+        APP: web
+        PORT: "3000"
+    container_name: trial-booking-web-local
+    ports:
+      - "3002:3000"
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000/api/v1}
+      - NEXT_PUBLIC_ADMIN_URL=${NEXT_PUBLIC_ADMIN_URL:-http://localhost:3001}
+    command: npm run dev --workspace=apps/web
+    restart: unless-stopped
+    networks:
+      - trial-booking-local
+
+  # ---------------------------------------------------------------------------
+  # Trial Booking System — Admin View (apps/admin)
+  # ---------------------------------------------------------------------------
+  admin:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      target: deps
+      args:
+        APP: admin
+        PORT: "3001"
+    container_name: trial-booking-admin-local
+    ports:
+      - "3001:3001"
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000/api/v1}
+      - NEXT_PUBLIC_WEB_URL=${NEXT_PUBLIC_WEB_URL:-http://localhost:3002}
+    command: npm run dev --workspace=apps/admin
+    restart: unless-stopped
+    networks:
+      - trial-booking-local
+
+networks:
+  trial-booking-local:
+    driver: bridge

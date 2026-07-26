@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18.18.0']
+
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Node.js with cache
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      # Install dependencies (uses npm workspaces)
+      - name: Install dependencies
+        run: npm ci
+
+      # Type check across all workspaces
+      - name: Type check
+        run: npm run type-check
+
+      # Lint code across all workspaces
+      - name: Lint
+        run: npm run lint
+
+      # Run tests across all workspaces
+      - name: Test
+        run: npm run test
+
+      # Build all apps (web, admin, and libs/shared as needed)
+      - name: Build
+        run: npm run build
+
+      # Verify standalone builds (optional — ensures Docker-compatible output)
+      - name: Verify standalone output
+        run: |
+          if [ ! -d "apps/web/.next/standalone" ]; then
+            echo "❌ Error: apps/web/.next/standalone not found"
+            exit 1
+          fi
+          if [ ! -d "apps/admin/.next/standalone" ]; then
+            echo "❌ Error: apps/admin/.next/standalone not found"
+            exit 1
+          fi
+          echo "✓ Standalone builds verified"
+
+      # Optional: Build and test Docker images (if Docker is available)
+      - name: Build Docker images
+        run: |
+          docker build -f apps/web/Dockerfile -t trial-booking-web:latest .
+          docker build -f apps/admin/Dockerfile -t trial-booking-admin:latest .

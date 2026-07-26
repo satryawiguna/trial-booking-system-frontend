@@ -1,0 +1,67 @@
+version: "3.8"
+
+# =============================================================================
+# Trial Booking System — Frontend — Production
+# =============================================================================
+# Profile: Production
+# Hot Reload: Disabled (pre-built standalone, node server.js)
+# Purpose:   Production deployment with optimized builds
+#
+# Usage:
+#   docker compose -f docker/docker-compose.prod.yml up
+#
+# Access:
+#   Parent View : http://localhost:3002
+#   Admin View  : http://localhost:3001
+#
+# Prerequisites:
+#   - Backend API running at NEXT_PUBLIC_API_URL
+#   - Set environment variables via .env or shell environment
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Trial Booking System — Parent View (apps/web)
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        APP: web
+        PORT: "3000"
+    container_name: trial-booking-web-prod
+    ports:
+      - "3002:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000/api/v1}
+      - NEXT_PUBLIC_ADMIN_URL=${NEXT_PUBLIC_ADMIN_URL:-http://localhost:3001}
+    restart: unless-stopped
+    networks:
+      - trial-booking-prod
+
+  # ---------------------------------------------------------------------------
+  # Trial Booking System — Admin View (apps/admin)
+  # ---------------------------------------------------------------------------
+  admin:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        APP: admin
+        PORT: "3001"
+    container_name: trial-booking-admin-prod
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:3000/api/v1}
+      - NEXT_PUBLIC_WEB_URL=${NEXT_PUBLIC_WEB_URL:-http://localhost:3002}
+    restart: unless-stopped
+    networks:
+      - trial-booking-prod
+
+networks:
+  trial-booking-prod:
+    driver: bridge

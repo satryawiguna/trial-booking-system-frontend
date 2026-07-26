@@ -1,0 +1,35 @@
+{
+  "name": "shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared UI components, hooks, services, types and utils — consumed by apps/web and apps/admin via the @shared/* path alias. Must NOT import from apps/*.",
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:cov": "jest --coverage --passWithNoTests"
+  },
+  "dependencies": {
+    "clsx": "2.1.1",
+    "tailwind-merge": "3.6.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/user-event": "14.6.1",
+    "@types/jest": "29.5.14",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "ts-jest": "29.4.12",
+    "typescript": "5.9.3"
+  }
+}
