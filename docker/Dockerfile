@@ -47,7 +47,6 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy monorepo root config
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY .eslintrc.json ./
 
 # Copy both apps and shared lib (build may resolve cross-references)
 COPY apps ./apps
