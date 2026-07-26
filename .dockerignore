@@ -9,8 +9,7 @@ coverage/
 .git/
 .gitignore
 
-# Dependencies (we'll install fresh in Docker)
-package-lock.json
+# Dependencies (installed via npm ci from package-lock.json)
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
