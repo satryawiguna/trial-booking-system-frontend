@@ -8,7 +8,7 @@ model: sonnet
 # Frontend Agent — Implementation
 
 **Applies to:** `trial-booking-system-frontend`
-**Prerequisite:** Baca `../trial-booking-system-context/.claude/agents/frontend.md` dan `PATTERNS.md` di repo ini
+**Prerequisite:** Baca role spec di MCP Server GitHub → [frontend.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/.claude/agents/frontend.md) (branch `master`) dan `PATTERNS.md` di repo ini
 
 ---
 

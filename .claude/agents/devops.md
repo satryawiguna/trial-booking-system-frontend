@@ -8,7 +8,7 @@ model: haiku
 # DevOps Agent — Deployment & Environment
 
 **Applies to:** `trial-booking-system-frontend`
-**Prerequisite:** Baca `../trial-booking-system-context/deployment/`
+**Prerequisite:** Baca deployment specs dari MCP Server GitHub → [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`) — folder `deployment/`
 
 ---
 

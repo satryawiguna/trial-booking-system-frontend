@@ -1,7 +1,7 @@
 /**
  * Shared Tailwind design tokens for the Trial Booking System.
  *
- * Source of truth: ../../trial-booking-system-context/design/design-system.md
+ * Source of truth: https://github.com/satryawiguna/trial-booking-system-context/blob/master/design/design-system.md
  * Values are taken verbatim from that document. Where the doc gives a range
  * (e.g. "oklch(0.40–0.55 0.03 50)"), the midpoint is used here.
  *

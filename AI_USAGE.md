@@ -21,7 +21,7 @@ No external code generation services (ChatGPT API, Copilot Workspace, etc.) were
 ## What I Used AI For
 
 - **Monorepo scaffolding** — Generating the full Next.js + npm workspaces structure: root `package.json` with workspace scripts, `tsconfig.json` with path aliases (`@shared/*` → `libs/shared/*`), ESLint, Prettier, Jest configs across all 3 workspaces (`apps/web`, `apps/admin`, `libs/shared`), and Tailwind CSS with a centralized `tailwind.config.base.js` consumed by both apps.
-- **Page implementation** — All 8 pages across both apps were generated from the design specs in `../trial-booking-system-context/design/pages/`:
+- **Page implementation** — All 8 pages across both apps were generated from the design specs in [`trial-booking-system-context/design/pages/`](https://github.com/satryawiguna/trial-booking-system-context/tree/master/design/pages) (branch `master`):
   - **Parent View (`apps/web`):** Trial Class List (`/`), Class Detail (`/trial-classes/[id]`), Booking Form (`/booking`), Payment (`/booking/[id]/payment`), Booking Status (`/booking/[id]/status`)
   - **Admin View (`apps/admin`):** Dashboard (`/`), Classes (`/classes`), Participant Roster (`/classes/[id]/roster`)
   - Each page includes `page.tsx`, `layout.tsx`, `loading.tsx` (skeleton/spinner), and `error.tsx` (error boundary) per the App Router convention.
@@ -29,8 +29,8 @@ No external code generation services (ChatGPT API, Copilot Workspace, etc.) were
 - **API integration layer** — `apiClient.ts` (fetch wrapper with error handling + `ApiClientError`), `trialClassService.ts` (3 endpoints), `bookingService.ts` (2 endpoints), all type-safe with request/response types defined in `libs/shared/types/`.
 - **Custom hooks** — `useTrialClasses`, `useTrialClass`, `useBooking`, `useCreateBooking`, `useRoster`, each managing loading/error/success states and surfacing user-friendly messages via `libs/shared/utils/errorMessages.ts`.
 - **Test generation** — 24 test suites / 129 tests across all 3 workspaces, covering: component unit tests (rendering, props, user interactions, edge cases), service unit tests (success/error paths, status codes), hook tests (loading → data → error lifecycle), page integration tests (full user workflows per `quality/test-scenarios.md`).
-- **Design-token compliance** — A full audit of `oklch()` color usage, typography (`Nunito` via `next/font/google`), spacing tokens, border radius tokens, and shadow tokens across all components and pages against `../trial-booking-system-context/design/design-system.md`, with findings documented in `README.md` § "Design-token compliance findings."
-- **API contract compliance checklist** — Endpoint-by-endpoint verification (`docs/api-contract-compliance.md`) of every frontend service call against `../trial-booking-system-context/architecture/api-design.md`, including one known, flagged deviation (`POST /bookings` request payload — documented as Known Gap #1).
+- **Design-token compliance** — A full audit of `oklch()` color usage, typography (`Nunito` via `next/font/google`), spacing tokens, border radius tokens, and shadow tokens across all components and pages against [design-system.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/design/design-system.md) (branch `master`, via MCP Server GitHub), with findings documented in `README.md` § "Design-token compliance findings."
+- **API contract compliance checklist** — Endpoint-by-endpoint verification (`docs/api-contract-compliance.md`) of every frontend service call against [api-design.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/architecture/api-design.md) (branch `master`, via MCP Server GitHub), including one known, flagged deviation (`POST /bookings` request payload — documented as Known Gap #1).
 - **Docker configuration** — 3-profile Docker Compose setup (local, development, production) with a unified multi-stage `Dockerfile` using `ARG APP=web|admin`, plus `docker-compose.local.yml`, `docker-compose.dev.yml`, `docker-compose.prod.yml`.
 - **CI pipeline** — GitHub Actions workflow (`.github/workflows/ci.yml`) covering install → lint → type-check → test → build across all workspaces.
 - **Documentation** — This file, `README.md`, `CLAUDE.md`, `AGENTS.md`, `PATTERNS.md`, `docs/api-contract-compliance.md`, `docs/deployment.md`, and 5 sub-agent `.md` files were co-written with AI assistance.
@@ -46,7 +46,7 @@ No external code generation services (ChatGPT API, Copilot Workspace, etc.) were
 
 ## One Place Where I Disagreed With, Corrected, or Rejected AI Output
 
-**The `POST /bookings` request payload shape.** The central API contract (`../trial-booking-system-context/architecture/api-design.md`) documents `POST /bookings` as accepting `{ studentId, trialClassId }` — implying a pre-existing `Student` resource. But the backend API has no `Student` resource, no "create student" endpoint, and no student-lookup endpoint anywhere. Meanwhile, the design specs (`design/pages/booking.md`, `design/components/booking-form.md`) specify a form that collects `parentName, studentName, phoneNumber, email, grade` — a full registrant payload, not a `studentId`.
+**The `POST /bookings` request payload shape.** The central API contract ([api-design.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/architecture/api-design.md)) documents `POST /bookings` as accepting `{ studentId, trialClassId }` — implying a pre-existing `Student` resource. But the backend API has no `Student` resource, no "create student" endpoint, and no student-lookup endpoint anywhere. Meanwhile, the design specs (`design/pages/booking.md`, `design/components/booking-form.md`) specify a form that collects `parentName, studentName, phoneNumber, email, grade` — a full registrant payload, not a `studentId`.
 
 The AI initially scaffolded `CreateBookingInput` with `{ studentId, trialClassId }` to match the API contract literally. I rejected that. The frontend cannot fabricate a `studentId` from thin air, and the design specs explicitly require collecting the full registrant information. I corrected `CreateBookingInput` to `{ parentName, studentName, phoneNumber, email, grade, trialClassId }` and documented the deviation as **Known Gap #1** in both `README.md` and `docs/api-contract-compliance.md`, with an explicit note that this is a judgment call requiring Backend Agent coordination — not a verified contract.
 
@@ -65,12 +65,12 @@ A second example: the AI initially wanted to make `PaymentForm` handle the faile
 
 ## How I Verified the Final Implementation
 
-- **API Contract Compliance Checklist** (`docs/api-contract-compliance.md`) — Endpoint-by-endpoint verification of all 4 API endpoints (`GET /trial-classes`, `GET /trial-classes/{id}`, `GET /trial-classes/{id}/roster`, `POST /bookings`) against `../trial-booking-system-context/architecture/api-design.md`. Method, path, request shape, response shape, and status-code handling checked for each. 3 endpoints fully compliant; 1 endpoint has a documented, flagged deviation (Known Gap #1).
-- **Design-token compliance spot-check** (`README.md` § "Design-token compliance findings") — 5 categories verified (colors, typography, spacing, border radius, shadows) against `../trial-booking-system-context/design/design-system.md`. All pass; 3 WCAG AA contrast failures identified as design-token defects (not implementation bugs), documented as Known Gap #6.
+- **API Contract Compliance Checklist** (`docs/api-contract-compliance.md`) — Endpoint-by-endpoint verification of all 4 API endpoints (`GET /trial-classes`, `GET /trial-classes/{id}`, `GET /trial-classes/{id}/roster`, `POST /bookings`) against [api-design.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/architecture/api-design.md) (branch `master`, via MCP Server GitHub). Method, path, request shape, response shape, and status-code handling checked for each. 3 endpoints fully compliant; 1 endpoint has a documented, flagged deviation (Known Gap #1).
+- **Design-token compliance spot-check** (`README.md` § "Design-token compliance findings") — 5 categories verified (colors, typography, spacing, border radius, shadows) against [design-system.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/design/design-system.md) (branch `master`, via MCP Server GitHub). All pass; 3 WCAG AA contrast failures identified as design-token defects (not implementation bugs), documented as Known Gap #6.
 - **Unit tests** — 24 test suites / 129 tests passing across all 3 workspaces. Component tests verify rendering, props, user interactions, and edge cases. Service tests verify success/error paths and status-code handling. Hook tests verify loading → data → error lifecycle.
 - **TypeScript strict mode** — `npm run type-check` passes with zero errors across all 3 workspaces.
 - **ESLint + Prettier** — `npm run lint` and `npm run format:check` pass with zero errors across all 3 workspaces.
-- **Terminology audit** — All entity names, enum values, component names, and page titles checked against `../trial-booking-system-context/discovery/glossary.md`. Consistent usage of "Trial Class" (not "Session"/"Course"), "Confirmed Booking" (not "Reserved Seat"), etc.
+- **Terminology audit** — All entity names, enum values, component names, and page titles checked against [glossary.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/discovery/glossary.md) (branch `master`, via MCP Server GitHub). Consistent usage of "Trial Class" (not "Session"/"Course"), "Confirmed Booking" (not "Reserved Seat"), etc.
 - **Scope audit** — No out-of-scope features found (no JWT, no real payment gateway, no notifications, no student management CRUD). Admin Dashboard and Classes pages have explicit "Scope Note" comments referencing their out-of-scope-but-present status per the design specs.
 - **Known gaps documentation** — 8 gaps identified between specs and implementation, all documented in `README.md` § "Known Gaps & Open Items" with exact file references rather than silently guessed or ignored.
 
@@ -101,10 +101,10 @@ A second example: the AI initially wanted to make `PaymentForm` handle the faile
 
 - `AI_USAGE.md` in [`trial-booking-system-context`](https://github.com/satryawiguna/trial-booking-system-context) (master) — AI usage disclosure for the specification phase
 - `AI_USAGE.md` in [`trial-booking-system-backend`](https://github.com/satryawiguna/trial-booking-system-backend) (master) — AI usage disclosure for the backend implementation phase
-- `../trial-booking-system-context/AGENTS.md` — Master agent catalog (all roles: Product, Domain, Architect, Design, Backend, Frontend, Quality, DevOps, Reviewer)
-- `../trial-booking-system-context/design/` — Page & component specs, design tokens (source of truth for UI)
-- `../trial-booking-system-context/architecture/api-design.md` — API contract (source of truth for service layer)
-- `../trial-booking-system-context/quality/test-scenarios.md` — Test scenarios (source of truth for test coverage)
+- [AGENTS.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/AGENTS.md) — Master agent catalog (all roles) (branch `master`, via MCP Server GitHub)
+- [design/](https://github.com/satryawiguna/trial-booking-system-context/tree/master/design) — Page & component specs, design tokens (source of truth for UI)
+- [api-design.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/architecture/api-design.md) — API contract (source of truth for service layer)
+- [test-scenarios.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/quality/test-scenarios.md) — Test scenarios (source of truth for test coverage)
 - `README.md` — Submission README (this repo)
 - `CLAUDE.md` — Operating rules for this repo
 - `AGENTS.md` — Agent roles and workflow for this repo

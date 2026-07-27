@@ -2,7 +2,7 @@
 
 This file coordinates which AI agent roles are responsible for which parts of the Trial Booking System frontend.
 
-**Read this first:** `../trial-booking-system-context/AGENTS.md` — The master agent catalog.
+**Read this first:** [AGENTS.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/AGENTS.md) (branch `master`, via MCP Server GitHub) — The master agent catalog.
 
 ---
 
@@ -10,7 +10,7 @@ This file coordinates which AI agent roles are responsible for which parts of th
 
 You are the **Frontend Agent** in the larger project. Your responsibility:
 
-- **Read:** All specs in `../trial-booking-system-context/design/`, `architecture/`, `quality/`
+- **Read:** All specs in the [context repo](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`, via MCP Server GitHub): `design/`, `architecture/`, `quality/`
 - **Produce:** Next.js implementation using shared components, hooks, and services
 - **Coordinate with:** Backend Agent (via shared API contracts in `architecture/api-design.md`)
 - **Verify against:** Quality Agent (test scenarios in `quality/test-scenarios.md`)
@@ -45,10 +45,10 @@ You are the **Frontend Agent** in the larger project. Your responsibility:
 ## Typical Workflow for a New Frontend Feature
 
 ```
-1. Product Agent → Updates ../trial-booking-system-context/product/
-2. Domain Agent → Updates ../trial-booking-system-context/domain/
-3. Architect → Updates ../trial-booking-system-context/architecture/
-4. Design Agent → Updates ../trial-booking-system-context/design/
+1. Product Agent → Updates [context repo](https://github.com/satryawiguna/trial-booking-system-context) `product/` (branch `master`, via MCP Server GitHub)
+2. Domain Agent → Updates [context repo](https://github.com/satryawiguna/trial-booking-system-context) `domain/` (branch `master`, via MCP Server GitHub)
+3. Architect → Updates [context repo](https://github.com/satryawiguna/trial-booking-system-context) `architecture/` (branch `master`, via MCP Server GitHub)
+4. Design Agent → Updates [context repo](https://github.com/satryawiguna/trial-booking-system-context) `design/` (branch `master`, via MCP Server GitHub)
 5. Backend Agent → Implements API in sibling repo
 6. Frontend Agent (you) → Implements in this repo
    - Create pages in apps/{web|admin}/src/app/
@@ -65,7 +65,7 @@ You are the **Frontend Agent** in the larger project. Your responsibility:
 
 **Always check:**
 
-1. ✅ **Is it in scope?** — Check `../trial-booking-system-context/discovery/project-scope.md`
+1. ✅ **Is it in scope?** — Check [project-scope.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/discovery/project-scope.md) (branch `master`, via MCP Server GitHub)
 2. ✅ **Is the design spec complete?** — Check the relevant page in `design/pages/`
 3. ✅ **Is the API ready?** — Check `architecture/api-design.md` for the endpoint contract
 4. ✅ **Do you have the ID?** — e.g., `US-001` (parent books trial), `US-007` (view roster)
@@ -124,7 +124,7 @@ Prompt Masuk
 
 ## Reference
 
-- `../trial-booking-system-context/AGENTS.md` — Master catalog
-- `../trial-booking-system-context/.claude/agents/frontend.md` — Detailed frontend agent role
+- [AGENTS.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/AGENTS.md) — Master catalog (branch `master`, via MCP Server GitHub)
+- [frontend.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/.claude/agents/frontend.md) — Detailed frontend agent role (branch `master`, via MCP Server GitHub)
 - `CLAUDE.md` — This repo's operating rules
 - `PATTERNS.md` — Coding standards & patterns

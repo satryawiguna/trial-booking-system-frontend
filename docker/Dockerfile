@@ -57,6 +57,9 @@ COPY libs/shared ./libs/shared
 WORKDIR /app/apps/${APP}
 RUN npm run build
 
+# Ensure public directory exists (even if empty) for the runner stage
+RUN mkdir -p /app/apps/${APP}/public
+
 # ---------------------------------------------------------------------------
 # Stage 3: Minimal production runner
 # ---------------------------------------------------------------------------
@@ -80,8 +83,8 @@ RUN addgroup -g 1001 appgroup && \
 #   - package.json
 COPY --from=builder --chown=appuser:appgroup /app/apps/${APP}/.next/standalone ./
 
-# Copy static assets if they exist
-COPY --from=builder --chown=appuser:appgroup /app/apps/${APP}/public ./public 2>/dev/null || true
+# Copy static assets (public directory always exists from builder stage)
+COPY --from=builder --chown=appuser:appgroup /app/apps/${APP}/public ./public
 
 # Switch to non-root user
 USER appuser

@@ -1,6 +1,6 @@
 // Integration test — Booking Form page (TS-003 Create Trial Booking, EC-001
-// Duplicate Booking Attempt). Mocks `trialClassService`/`bookingService` (the
-// boundary the page's hooks/handlers talk to) — see
+// Duplicate Booking Attempt). Mocks `trialClassService`/`studentService`/`bookingService`
+// (the boundary the page's hooks/handlers talk to) — see
 // apps/web/src/app/page.test.tsx for the repo-wide mocking rationale.
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -26,6 +26,13 @@ jest.mock("@shared/services/trialClassService", () => ({
   },
 }));
 
+jest.mock("@shared/services/studentService", () => ({
+  studentService: {
+    create: jest.fn(),
+    list: jest.fn(),
+  },
+}));
+
 jest.mock("@shared/services/bookingService", () => ({
   bookingService: {
     create: jest.fn(),
@@ -36,11 +43,13 @@ jest.mock("@shared/services/bookingService", () => ({
 }));
 
 import { trialClassService } from "@shared/services/trialClassService";
+import { studentService } from "@shared/services/studentService";
 import { bookingService } from "@shared/services/bookingService";
 import { BookingFormPageContent } from "./BookingFormPageContent";
 
 const mockedGetById = trialClassService.getById as jest.Mock;
-const mockedCreate = bookingService.create as jest.Mock;
+const mockedCreateStudent = studentService.create as jest.Mock;
+const mockedCreateBooking = bookingService.create as jest.Mock;
 
 const trialClass: TrialClass = {
   id: "11111111-1111-1111-1111-111111111111",
@@ -60,7 +69,10 @@ async function fillForm() {
     screen.getByLabelText("Phone Number"),
     "+62 812 3456 7890",
   );
-  await userEvent.type(screen.getByLabelText("Email Address"), "jane@email.com");
+  await userEvent.type(
+    screen.getByLabelText("Email Address"),
+    "jane@email.com",
+  );
   await userEvent.selectOptions(
     screen.getByLabelText("Student Grade"),
     "Grade 1",
@@ -71,14 +83,18 @@ describe("Booking Form Page (TS-003 / EC-001)", () => {
   beforeEach(() => {
     push.mockClear();
     mockedGetById.mockReset();
-    mockedCreate.mockReset();
+    mockedCreateStudent.mockReset();
+    mockedCreateBooking.mockReset();
     searchParams = new URLSearchParams({ classId: trialClass.id });
     window.sessionStorage.clear();
   });
 
-  it("submits the booking with the correct payload and navigates to payment on success", async () => {
+  it("submits the booking via two-step flow: POST /students then POST /bookings, and navigates to payment", async () => {
     mockedGetById.mockResolvedValueOnce(trialClass);
-    mockedCreate.mockResolvedValueOnce({
+    mockedCreateStudent.mockResolvedValueOnce({
+      studentId: "student-uuid-1",
+    });
+    mockedCreateBooking.mockResolvedValueOnce({
       bookingId: "booking-1",
       status: "PENDING_PAYMENT",
     });
@@ -91,22 +107,34 @@ describe("Booking Form Page (TS-003 / EC-001)", () => {
       screen.getByRole("button", { name: "Continue to Payment →" }),
     );
 
+    // Step 1: create student from form fields
     await waitFor(() => {
-      expect(mockedCreate).toHaveBeenCalledWith({
+      expect(mockedCreateStudent).toHaveBeenCalledWith({
         parentName: "Jane Smith",
         studentName: "Emily Smith",
         phoneNumber: "+62 812 3456 7890",
         email: "jane@email.com",
         grade: "Grade 1",
+      });
+    });
+
+    // Step 2: create booking with studentId + trialClassId
+    await waitFor(() => {
+      expect(mockedCreateBooking).toHaveBeenCalledWith({
+        studentId: "student-uuid-1",
         trialClassId: trialClass.id,
       });
     });
+
     expect(push).toHaveBeenCalledWith("/booking/booking-1/payment");
   });
 
   it("shows an inline error and keeps field values on a duplicate-booking rejection (EC-001)", async () => {
     mockedGetById.mockResolvedValueOnce(trialClass);
-    mockedCreate.mockRejectedValueOnce(
+    mockedCreateStudent.mockResolvedValueOnce({
+      studentId: "student-uuid-1",
+    });
+    mockedCreateBooking.mockRejectedValueOnce(
       new ApiClientError(
         409,
         "DUPLICATE_BOOKING",

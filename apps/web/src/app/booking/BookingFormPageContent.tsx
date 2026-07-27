@@ -13,6 +13,7 @@ import {
 import { useTrialClass } from "@shared/hooks";
 import { ApiClientError } from "@shared/services/apiClient";
 import { bookingService } from "@shared/services/bookingService";
+import { studentService } from "@shared/services/studentService";
 import type { BookingFormFields, Grade } from "@shared/types";
 import {
   getErrorMessage,
@@ -87,20 +88,25 @@ export function BookingFormPageContent() {
     setIsSubmitting(true);
     setSubmitError(undefined);
     try {
-      // ASSUMPTION — FLAGGED FOR BACKEND AGENT CONFIRMATION. See the
-      // detailed comment on `CreateBookingInput`
-      // (libs/shared/types/booking.ts): api-design.md's documented
-      // `POST /bookings` request body is `{ studentId, trialClassId }`, but
-      // there is no documented endpoint to obtain a `studentId` from the
-      // registrant fields this form collects. This call sends the full
-      // registrant payload straight to `POST /bookings` in one request,
-      // assuming the backend derives/creates the Student record from it.
-      const result = await bookingService.create({
+      // Two-step flow (Option 2 — confirmed backend contract):
+      //   1. POST /students  → get studentId from registrant fields
+      //   2. POST /bookings  → create booking with { studentId, trialClassId }
+      //
+      // The backend CreateBookingDto only accepts { studentId, trialClassId }
+      // (both UUIDs), so we must obtain a studentId before creating the booking.
+
+      const grade = values.grade as Grade;
+
+      const { studentId } = await studentService.create({
         parentName: values.parentName,
         studentName: values.studentName,
         phoneNumber: values.phoneNumber,
         email: values.email,
-        grade: values.grade as Grade,
+        grade,
+      });
+
+      const result = await bookingService.create({
+        studentId,
         trialClassId: classId,
       });
 
@@ -167,7 +173,9 @@ export function BookingFormPageContent() {
       <div className="mt-8">
         {isLoading && <BookingFormContentSkeleton />}
 
-        {!isLoading && error && <ErrorMessage message={error} onRetry={refetch} />}
+        {!isLoading && error && (
+          <ErrorMessage message={error} onRetry={refetch} />
+        )}
 
         {!isLoading && !error && trialClass && (
           <div className="flex flex-col gap-6 md:flex-row md:items-start">

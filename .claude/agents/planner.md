@@ -8,7 +8,7 @@ model: haiku
 # Planner Agent — Frontend Implementation
 
 **Applies to:** `trial-booking-system-frontend`
-**Prerequisite:** Baca `../trial-booking-system-context/` untuk spesifikasi pusat
+**Prerequisite:** Baca spesifikasi pusat via MCP Server GitHub → [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`)
 
 ---
 
@@ -23,7 +23,7 @@ Memecah permintaan fitur atau perubahan menjadi task list yang terstruktur, mema
 ```
 Prompt Masuk
     ↓
-1. Baca dokumentasi pusat di ../trial-booking-system-context/
+1. Baca dokumentasi pusat via MCP Server GitHub → [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`):
    - discovery/project-scope.md (scope check)
    - design/pages/ (page specs)
    - design/components/ (component specs)

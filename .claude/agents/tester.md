@@ -8,7 +8,7 @@ model: haiku
 # Tester Agent — Frontend Verification
 
 **Applies to:** `trial-booking-system-frontend`
-**Prerequisite:** Baca `../trial-booking-system-context/quality/` untuk test scenarios
+**Prerequisite:** Baca test scenarios via MCP Server GitHub → [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`) — folder `quality/`
 
 ---
 

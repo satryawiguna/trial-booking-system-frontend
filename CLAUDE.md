@@ -9,13 +9,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working on the 
 **Project Name:** Trial Booking System Frontend  
 **Purpose:** Next.js frontend for booking trial science/math classes — Parent-facing booking flow and Admin dashboard/roster.  
 **Tech Stack:** Next.js (App Router), TypeScript, Tailwind CSS  
-**Source of Truth:** `../trial-booking-system-context/` — Read CLAUDE.md and AGENTS.md there first.
+**Source of Truth:** [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`) — accessible via MCP Server GitHub. Read CLAUDE.md and AGENTS.md there first.
 
 ---
 
 ## Core Responsibility
 
-You are implementing the **Frontend Agent** role (see `../trial-booking-system-context/.claude/agents/frontend.md`). Your focus:
+You are implementing the **Frontend Agent** role (see [frontend.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/.claude/agents/frontend.md) via MCP Server GitHub). Your focus:
 
 - ✅ Implement pages and components per `design/pages/` and `design/components/`
 - ✅ Consume backend API exactly as specified in `architecture/api-design.md`
@@ -142,7 +142,7 @@ npm run type-check
 
 ### Docker — Deployment Profiles
 
-The project supports three deployment profiles per `../trial-booking-system-context/deployment/environment-configuration.md`. All Docker files live in `docker/`.
+The project supports three deployment profiles per [environment-configuration.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/deployment/environment-configuration.md) (branch `master`, accessible via MCP Server GitHub). All Docker files live in `docker/`.
 
 | Profile     | Compose File                      | Hot Reload            | Purpose                                           |
 | ----------- | --------------------------------- | --------------------- | ------------------------------------------------- |
@@ -254,12 +254,12 @@ Backend REST API (http://localhost:3000/api/v1)
 
 ### Before Starting Work
 
-1. **Read the specs** — Start with `../trial-booking-system-context/README.md`, then the relevant design docs
+1. **Read the specs** — Start with the [context repo README](https://github.com/satryawiguna/trial-booking-system-context/blob/master/README.md) (branch `master`, via MCP Server GitHub), then the relevant design docs
 2. **Understand the IDs** — Every feature has an ID (`US-###`, `AC-###`, `TS-###`, etc.). Know which IDs you're implementing
-3. **Check API contracts** — Read `../trial-booking-system-context/architecture/api-design.md`
-4. **Check page specs** — Read the relevant page in `../trial-booking-system-context/design/pages/`
-5. **Check component specs** — Read the relevant component in `../trial-booking-system-context/design/components/`
-6. **Know design tokens** — Read `../trial-booking-system-context/design/design-system.md`
+3. **Check API contracts** — Read [api-design.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/architecture/api-design.md) (via MCP Server GitHub)
+4. **Check page specs** — Read the relevant page in `design/pages/` at the [context repo](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`, via MCP Server GitHub)
+5. **Check component specs** — Read the relevant component in `design/components/` at the [context repo](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`, via MCP Server GitHub)
+6. **Know design tokens** — Read [design-system.md](https://github.com/satryawiguna/trial-booking-system-context/blob/master/design/design-system.md) (via MCP Server GitHub)
 7. **Follow PATTERNS.md** — Always follow the patterns in `PATTERNS.md`
 
 ### Common Development Patterns

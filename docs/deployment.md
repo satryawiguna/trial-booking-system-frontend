@@ -14,17 +14,17 @@ The frontend uses environment variables to configure API endpoints and cross-app
 
 #### apps/web (Parent View)
 
-| Variable | Purpose | Example |
-|---|---|---|
-| `NEXT_PUBLIC_API_URL` | Backend REST API base URL (endpoint prefix: `/api/v1`) | `http://localhost:3000/api/v1` or `https://api.trial-booking.com/api/v1` |
-| `NEXT_PUBLIC_ADMIN_URL` | Admin View URL, used by the Navbar's role-switch button for cross-app navigation | `http://localhost:3001` or `https://admin.trial-booking.com` |
+| Variable                | Purpose                                                                          | Example                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_API_URL`   | Backend REST API base URL (endpoint prefix: `/api/v1`)                           | `http://localhost:3000/api/v1` or `https://api.trial-booking.com/api/v1` |
+| `NEXT_PUBLIC_ADMIN_URL` | Admin View URL, used by the Navbar's role-switch button for cross-app navigation | `http://localhost:3001` or `https://admin.trial-booking.com`             |
 
 #### apps/admin (Admin View)
 
-| Variable | Purpose | Example |
-|---|---|---|
-| `NEXT_PUBLIC_API_URL` | Backend REST API base URL (same contract as above) | `http://localhost:3000/api/v1` or `https://api.trial-booking.com/api/v1` |
-| `NEXT_PUBLIC_WEB_URL` | Parent View URL, used by the Navbar's role-switch button | `http://localhost:3000` or `https://booking.trial-booking.com` |
+| Variable              | Purpose                                                  | Example                                                                  |
+| --------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `NEXT_PUBLIC_API_URL` | Backend REST API base URL (same contract as above)       | `http://localhost:3000/api/v1` or `https://api.trial-booking.com/api/v1` |
+| `NEXT_PUBLIC_WEB_URL` | Parent View URL, used by the Navbar's role-switch button | `http://localhost:3000` or `https://booking.trial-booking.com`           |
 
 ### Setup: Local Development
 
@@ -205,7 +205,7 @@ This repo's `docker-compose.yml` maps the web app to port **3002** externally, i
 services:
   web:
     ports:
-      - "3002:3000"  # External:Internal
+      - "3002:3000" # External:Internal
 ```
 
 You can run the backend separately (or add its docker-compose service) on port 3000:
@@ -220,6 +220,7 @@ docker-compose up
 ```
 
 Access:
+
 - Parent View: http://localhost:3002
 - Admin View: http://localhost:3001
 - Backend API: http://localhost:3000
@@ -241,6 +242,7 @@ Or set it when building the Docker image (Option A above).
 `.github/workflows/ci.yml` runs on push and pull request (branches: `main`, `develop`).
 
 **Steps:**
+
 1. Checkout code
 2. Setup Node.js 18.18.0 (from `package.json` → `engines`)
 3. npm ci (install from lock file)
@@ -325,7 +327,7 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
    npm install
    npm run build:web
    npm run start:web  # runs on port 3000
-   
+
    npm run build:admin
    npm run start:admin  # runs on port 3001
    ```
@@ -340,6 +342,7 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
 **Cause:** Build context doesn't include `libs/shared`, or `transpilePackages` is missing from `next.config.js`.
 
 **Fix:**
+
 - Ensure build context is repo root: `docker build -f apps/web/Dockerfile -t trial-booking-web .` (note the `.` for repo root, not `apps/web`)
 - Verify `apps/web/next.config.js` has `transpilePackages: ['@shared']`
 
@@ -348,6 +351,7 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
 **Cause:** `NEXT_PUBLIC_*` variables are baked at build time, not runtime.
 
 **Fix:**
+
 - Rebuild the image with the correct variables:
   ```bash
   export NEXT_PUBLIC_API_URL=...
@@ -360,6 +364,7 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
 **Cause:** Backend is also running on port 3000.
 
 **Fix:**
+
 - See "Port Collision Handling" section above
 - In docker-compose, web already maps to external port 3002; ensure backend runs on 3000 or a different port
 
@@ -368,6 +373,7 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
 **Cause:** Dependencies not fully installed, or a workspace's lint/type-check failed.
 
 **Fix:**
+
 - Run `npm ci` to ensure lock-file consistency
 - Run each step locally: `npm run type-check`, `npm run lint`, `npm run test`
 - Check recent commits to `PATTERNS.md` or component changes for violations
@@ -381,4 +387,4 @@ docker push docker.io/myorg/trial-booking-web:1.0.0
 - **CI:** Push to GitHub → automatic type-check, lint, test, build via GitHub Actions
 - **Deployment:** Connect app repos to Vercel, or build Docker images and deploy to your chosen platform
 
-For full architecture and design context, see `../trial-booking-system-context/`.
+For full architecture and design context, see [trial-booking-system-context](https://github.com/satryawiguna/trial-booking-system-context) (branch `master`).
