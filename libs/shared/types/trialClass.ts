@@ -23,8 +23,11 @@ export interface TrialClass {
 }
 
 export interface TrialClassRosterParticipant {
+  bookingId: string;
   studentId: string;
   studentName: string;
+  /** ISO-8601 timestamp, e.g. "2026-07-27T02:09:36.727Z" */
+  createdAt: string;
 }
 
 /**

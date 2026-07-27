@@ -14,12 +14,14 @@
 // `GET /trial-classes/{id}/roster` for every class (roster is documented to
 // return confirmed participants only — BR-011/INV-007), and aggregates
 // those into a real (not invented) "Confirmed" count and participant list.
-// The Total / Pending / Cancelled / Payment Failed stat cards — and the
-// Booking ID / Date columns of the table — have no data source in the
-// documented API at all, so they are rendered as explicitly "Not available"
-// rather than fabricated. A `GET /bookings` (or equivalent aggregate)
-// endpoint would need to be added to the API contract to fully implement
-// this screen as specced; flagged for the Backend/Architect agents.
+// The Total / Pending / Cancelled / Payment Failed stat cards have no data
+// source in the documented API at all, so they are rendered as explicitly
+// "Not available" rather than fabricated. A `GET /bookings` (or equivalent
+// aggregate) endpoint would need to be added to the API contract to fully
+// implement this screen as specced; flagged for the Backend/Architect agents.
+//
+// Booking ID & Date columns now populate from `bookingId` and `createdAt`
+// fields added to the roster response (`TrialClassRosterParticipant`).
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -27,13 +29,15 @@ import { ErrorMessage, Skeleton, StatusBadge } from "@shared/components";
 import { ApiClientError } from "@shared/services/apiClient";
 import { trialClassService } from "@shared/services/trialClassService";
 import { BookingStatus } from "@shared/types";
-import { cn, getErrorMessage } from "@shared/utils";
+import { cn, formatDate, getErrorMessage } from "@shared/utils";
 
 interface ConfirmedRow {
+  bookingId: string;
   studentId: string;
   studentName: string;
   classId: string;
   classTitle: string;
+  createdAt: string;
 }
 
 interface DashboardData {
@@ -61,10 +65,12 @@ function useDashboardData() {
         const trialClass = classes[index];
         roster.participants.forEach((participant) => {
           confirmedRows.push({
+            bookingId: participant.bookingId,
             studentId: participant.studentId,
             studentName: participant.studentName,
             classId: trialClass.id,
             classTitle: trialClass.title,
+            createdAt: participant.createdAt,
           });
         });
       });
@@ -245,8 +251,8 @@ export default function DashboardPage() {
                           key={`${row.classId}-${row.studentId}`}
                           className="border-b border-border last:border-0"
                         >
-                          <td className="px-card-sm py-3 text-muted-foreground">
-                            —
+                          <td className="px-card-sm py-3 font-mono text-xs text-foreground">
+                            {row.bookingId}
                           </td>
                           <td className="px-card-sm py-3 font-bold text-foreground">
                             {row.studentName}
@@ -263,7 +269,7 @@ export default function DashboardPage() {
                             <StatusBadge status={BookingStatus.CONFIRMED} />
                           </td>
                           <td className="px-card-sm py-3 text-muted-foreground">
-                            —
+                            {formatDate(row.createdAt)}
                           </td>
                         </tr>
                       ))}

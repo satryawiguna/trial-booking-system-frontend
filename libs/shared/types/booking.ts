@@ -34,6 +34,13 @@ export interface Booking {
   status: BookingStatus;
   studentId: string;
   trialClassId: string;
+  /** ISO-8601 timestamp, e.g. "2026-07-27T01:00:42.314Z" */
+  createdAt: string;
+  /**
+   * ISO-8601 timestamp, only present if status >= CONFIRMED.
+   * Undefined for PENDING_PAYMENT or CANCELLED bookings.
+   */
+  confirmedAt?: string;
 }
 
 /**
