@@ -56,6 +56,7 @@ const pendingBooking: Booking = {
   status: BookingStatus.PENDING_PAYMENT,
   studentId: "student-1",
   trialClassId: trialClass.id,
+  createdAt: "2026-08-01T10:00:00Z",
 };
 
 describe("Payment Page (TS-004 / EC-003 / EC-004)", () => {

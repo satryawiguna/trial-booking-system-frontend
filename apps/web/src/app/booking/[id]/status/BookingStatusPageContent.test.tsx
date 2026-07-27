@@ -57,6 +57,7 @@ function booking(status: BookingStatus): Booking {
     status,
     studentId: "student-1",
     trialClassId: trialClass.id,
+    createdAt: "2026-08-01T10:00:00Z",
   };
 }
 

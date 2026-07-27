@@ -49,8 +49,18 @@ const classTwo: TrialClass = {
 const rosterWithParticipants: TrialClassRoster = {
   trialClassId: "class-1",
   participants: [
-    { studentId: "s-1", studentName: "Emily Smith" },
-    { studentId: "s-2", studentName: "Liam Johnson" },
+    {
+      bookingId: "b-1",
+      studentId: "s-1",
+      studentName: "Emily Smith",
+      createdAt: "2026-08-01T10:00:00Z",
+    },
+    {
+      bookingId: "b-2",
+      studentId: "s-2",
+      studentName: "Liam Johnson",
+      createdAt: "2026-08-01T10:00:00Z",
+    },
   ],
 };
 
@@ -86,7 +96,9 @@ describe("Participant Roster Page (TS-006)", () => {
     render(<ParticipantRosterPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("No confirmed participants yet.")).toBeInTheDocument();
+      expect(
+        screen.getByText("No confirmed participants yet."),
+      ).toBeInTheDocument();
     });
     expect(screen.getByText("0 Confirmed")).toBeInTheDocument();
   });
